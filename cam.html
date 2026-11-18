@@ -67,7 +67,7 @@ footer{display:flex;align-items:center;justify-content:space-around;padding:14px
     <div id="hint"></div>
     <div id="zoomWrap" hidden><span>ズーム</span><input id="zoom" type="range"><span id="zoomVal"></span></div>
     <div id="flash"></div>
-    <div id="ver">v2</div>
+    <div id="ver">v3</div>
   </div>
   <footer>
     <button id="nativeBtn" class="side">標準<br>カメラ</button>
@@ -360,9 +360,24 @@ footer{display:flex;align-items:center;justify-content:space-around;padding:14px
     showNum();
   }
 
+  // iPhone / iPad かどうか（iPadOS は Mac として名乗るため画面タッチで判定）
+  const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent) ||
+    (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  if (isIOS) $('saveBtn').textContent = '写真に保存';
+
   function save() {
     if (!curBlob) return;
     const name = safeName(fname.value);
+    // iPhone では共有メニューの「画像を保存」から写真アプリへ保存する
+    if (isIOS) {
+      const file = new File([curBlob], name, { type: 'image/jpeg' });
+      if (navigator.canShare && navigator.canShare({ files: [file] })) {
+        navigator.share({ files: [file] })
+          .then(() => { toast('保存しました：' + name); advance(); closeReview(); })
+          .catch(e => { if (e && e.name !== 'AbortError') toast('保存できませんでした'); });
+        return;
+      }
+    }
     const url = URL.createObjectURL(curBlob);
     const a = document.createElement('a');
     a.href = url; a.download = name; document.body.appendChild(a); a.click();
