@@ -118,13 +118,13 @@ footer{display:flex;align-items:center;justify-content:space-around;padding:14px
   };
   let presetIdx = Math.min(PRESETS.length - 1, Math.max(0, parseInt(store.get('preset', '1'), 10) || 0));
   let counter = Math.max(1, parseInt(store.get('num', '1'), 10) || 1);
-  prefix.value = store.get('prefix', '');
+  prefix.value = '';
   const pad = n => String(n).padStart(3, '0');
   const showNum = () => { num.value = pad(counter); updateHint(); };
   function updateHint() {
     hint.textContent = '次のファイル名：' + defaultName() + '.jpg';
   }
-  prefix.addEventListener('input', () => { store.set('prefix', prefix.value); updateHint(); });
+  prefix.addEventListener('input', updateHint);
   num.addEventListener('change', () => {
     const n = parseInt(num.value.replace(/\D/g, ''), 10);
     counter = n > 0 ? n : 1; store.set('num', counter); showNum();
@@ -353,7 +353,9 @@ footer{display:flex;align-items:center;justify-content:space-around;padding:14px
   }
 
   function advance() {
-    counter++; store.set('num', counter); showNum();
+    counter++; store.set('num', counter);
+    prefix.value = '';   // 保存したら名前は毎回リセット
+    showNum();
   }
 
   function save() {
