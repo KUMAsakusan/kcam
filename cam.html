@@ -26,6 +26,7 @@ video{width:100%;height:100%;object-fit:contain;display:block;background:#000}
 #flash{position:absolute;inset:0;background:#fff;opacity:0;pointer-events:none;transition:opacity .25s}
 #zoomWrap{position:absolute;left:16px;right:16px;bottom:10px;display:flex;align-items:center;gap:10px;font-size:13px;color:var(--sub)}
 #zoom{flex:1;accent-color:var(--acc)}
+#ver{position:absolute;right:8px;top:8px;font-size:11px;color:#555;pointer-events:none}
 #hint{position:absolute;left:0;right:0;top:8px;text-align:center;font-size:13px;color:var(--sub);pointer-events:none}
 footer{display:flex;align-items:center;justify-content:space-around;padding:14px 10px calc(env(safe-area-inset-bottom) + 18px)}
 #shutter{width:78px;height:78px;border-radius:50%;border:4px solid #fff;background:#fff;box-shadow:inset 0 0 0 4px #000;padding:0}
@@ -66,6 +67,7 @@ footer{display:flex;align-items:center;justify-content:space-around;padding:14px
     <div id="hint"></div>
     <div id="zoomWrap" hidden><span>ズーム</span><input id="zoom" type="range"><span id="zoomVal"></span></div>
     <div id="flash"></div>
+    <div id="ver">v2</div>
   </div>
   <footer>
     <button id="nativeBtn" class="side">標準<br>カメラ</button>
@@ -402,7 +404,8 @@ footer{display:flex;align-items:center;justify-content:space-around;padding:14px
 
   // アプリとしてインストールできるようにする
   if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('sw.js').catch(() => {});
+    navigator.serviceWorker.register('sw.js', { updateViaCache: 'none' })
+      .then(r => r.update()).catch(() => {});
   }
 })();
 </script>
