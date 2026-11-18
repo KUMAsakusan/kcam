@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
 <meta name="theme-color" content="#000000">
 <meta name="mobile-web-app-capable" content="yes">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon-192.png">
 <title>軽量カメラ</title>
 <style>
 :root{--fg:#f2f2f2;--sub:#9a9a9a;--acc:#ffb300;--panel:#161616;--line:#2c2c2c}
@@ -395,6 +397,11 @@ footer{display:flex;align-items:center;justify-content:space-around;padding:14px
   });
 
   startCamera();
+
+  // アプリとしてインストールできるようにする
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('sw.js').catch(() => {});
+  }
 })();
 </script>
 </body>
